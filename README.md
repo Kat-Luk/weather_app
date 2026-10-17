@@ -2,7 +2,7 @@
 
 A cozy, witchy pixel art weather app. Course project (Project 2: Weather app).
 Plain HTML, CSS and JavaScript, plus the Chart.js library for the chart.
-Documentation: [docs/report.pdf](docs/report.pdf).
+Documentation: [docs/report.pdf](REPORT/report.pdf).
 
 ## How to run
 
@@ -14,7 +14,7 @@ python -m http.server 5500
 
 and go to http://localhost:5500. (A web server is needed for the GPS button: browsers allow location only on `https://` or `localhost` pages.)
 
-The 3 main weather sources need no API keys. OpenWeatherMap (4th source) uses the key in `js/config.js`. Remove it after grading.
+The 3 main weather sources need no API keys. OpenWeatherMap (4th source) uses the key in `js/config.js`. Remove it after you're done.
 
 ## Folder structure
 
@@ -39,7 +39,7 @@ assets/moon/               moon phases
 assets/sprites/            animated sprites (witch, cat, cauldron, bat, ghost, pumpkin)
 assets/tarot/              tarot cards (resized)
 assets/zodiac/             zodiac symbols
-docs/                      report (PDF + the HTML it was printed from)
+REPORT/                    report (PDF + the HTML it was printed from)
 ```
 
 ## Data sources
@@ -55,15 +55,14 @@ docs/                      report (PDF + the HTML it was printed from)
 
 ## Art credits
 
-| Art | Author / source | License |
-|---|---|---|
+
 | Sky, ocean and winter backgrounds | [CraftPix.net](https://craftpix.net/) free packs | [CraftPix free license](https://craftpix.net/file-licenses/) |
-| Weather icons | bgbw, DeviantArt ("Pixel weather icons") | TODO: check the license on the download page |
-| Moon phases | TODO: author / source | TODO |
-| Tarot Cats deck | TODO: author / source | TODO |
-| Halloween set (witch, cat, cauldron, bat, ghost, pumpkin) | TODO: author / source | TODO |
-| Zodiac symbols | TODO: author / source | TODO |
-| Cat face on the tarot card back (recolored gold) | TODO: author / source | TODO |
+| Weather icons | bgbw, DeviantArt ("Pixel weather icons")
+| Moon phases | 
+| Tarot Cats deck |
+| Halloween set (witch, cat, cauldron, bat, ghost, pumpkin) | 
+| Zodiac symbols | 
+| Cat face on the tarot card back (recolored gold) | 
 | Fonts | Pixelify Sans, Nunito ([Google Fonts](https://fonts.google.com/)) | SIL Open Font License |
 
 The art files were resized, recolored (icons) or combined into sprite strips for the web; the originals are unchanged.
