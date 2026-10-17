@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raining Cats &amp; Witches</title>
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&family=Pixelify+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Cute pixel sky behind everything -->
+    <div class="sky" aria-hidden="true">
+        <div class="sky__layers" id="sky-layers"></div>
+        <div class="sky__fog" id="sky-fog"></div>
+        <canvas class="sky__precip" id="sky-precip"></canvas>
+        <div class="sky__flash" id="sky-flash"></div>
+        <div class="sky__critters" id="sky-critters"></div>
+        <div class="sky__shade"></div>
+    </div>
+
+    <!-- nav bar (logo, search,...) -->
+    <header class="header">
+        <a class="logo" href="#" aria-label="Raining Cats and Witches, home">
+            <span class="logo__witch sprite" aria-hidden="true"></span>
+            <span class="logo__text">Raining Cats <span class="logo__amp">&amp;</span> Witches</span>
+        </a>
+
+        <div class="header__search">
+            <form class="search" id="search-form">
+                <input
+                    class="search__input"
+                    id="search-input"
+                    type="search"
+                    placeholder="Search a city..."
+                    autocomplete="off"
+                    aria-label="City name"
+                >
+                <button class="search__button" type="submit">Search</button>
+                <button class="search__button" id="location-button" type="button" title="Use my location" aria-label="Use my location">📍</button>
+            </form>
+            <!-- List of locations if search finds more of them -->
+            <ul class="search-results" id="search-results" hidden></ul>
+        </div>
+
+        <div class="header__tools">
+            <!-- unit swtich and highlight selected one -->
+            <div class="units" id="unit-switch" role="group" aria-label="Temperature unit">
+                <button type="button" class="units__button" data-unit="C">°C</button>
+                <button type="button" class="units__button" data-unit="F">°F</button>
+                <button type="button" class="units__button" data-unit="K">K</button>
+            </div>
+
+            <!-- fav menu, withput javascript  -->
+            <details class="favorites" id="favorites-menu">
+                <summary class="favorites__toggle">★ Favs</summary>
+                <ul class="favorites__list" id="favorites-list"></ul>
+            </details>
+        </div>
+    </header>
+
+    <!-- status messages -->
+    <p class="message" id="message" role="status" hidden></p>
+
+    <main class="main">
+        <!-- weather rn Helsinki default, biiig and on TOP (like a hero haha) -->
+        <section class="hero" id="current">
+            <div class="hero__place">
+                <div class="hero__heading">
+                    <h2 class="hero__city" id="current-city">Helsinki</h2>
+                    <button type="button" class="star" id="favorite-button" aria-label="Add to favorites" title="Add to favorites">☆</button>
+                </div>
+                <p class="hero__country" id="current-country">Finland</p>
+                <p class="hero__time" id="current-time"></p>
+            </div>
+
+            <!-- cool and niche vertical weather -->
+            <p class="hero__word" id="current-word" aria-hidden="true"></p>
+
+            <div class="hero__main">
+                <!-- Loading bubbuling witchy pot -->
+                <span class="hero__icon" id="current-icon"><span class="loader sprite" title="Brewing the forecast…"></span></span>
+                <span class="hero__temp" id="current-temp">--°</span>
+            </div>
+            <p class="hero__description" id="current-description">Brewing the forecast…</p>
+
+            <ul class="hero__details">
+                <li><span aria-hidden="true">🌡️</span> Feels like <strong id="current-feels">--°</strong></li>
+                <li><span aria-hidden="true">💨</span> Wind <strong id="current-wind">-- m/s</strong></li>
+                <li><span aria-hidden="true">💧</span> Humidity <strong id="current-humidity">--%</strong></li>
+                <li><span aria-hidden="true">☔</span> Rain <strong id="current-precipitation">-- mm</strong></li>
+            </ul>
+
+            <!-- Wise cats weather advice -->
+            <div class="cat-corner">
+                <p class="cat-corner__bubble" id="cat-tip">Purrrr... let me check the sky.</p>
+                <span class="cat sprite" aria-hidden="true"></span>
+            </div>
+
+            <!-- Which data source is shown in the current, hourly, daily section -->
+            <div class="hero__source">
+                <label class="source-select">
+                    Data source
+                    <select id="provider-select"></select>
+                </label>
+                <p class="source-note" id="source-note"></p>
+            </div>
+        </section>
+
+        <!-- next 24 hours -->
+        <section class="card hourly-card">
+            <h2 class="card__title">Next 24 hours</h2>
+            <!-- JS fills the list -->
+            <ul class="hourly" id="hourly-list"></ul>
+        </section>
+
+        <!-- moon tonight (spoookyyy)-->
+        <section class="card moon-card">
+            <h2 class="card__title">Tonight's moon</h2>
+            <div class="moon">
+                <img class="moon__image" id="moon-image" src="assets/moon/phase-1.png" alt="">
+                <div class="moon__info">
+                    <p class="moon__name" id="moon-name">…</p>
+                    <p id="moon-light"></p>
+                    <p class="moon__full" id="moon-full"></p>
+                    <p class="moon__times">↑ <span id="moon-rise">--</span> &nbsp; ↓ <span id="moon-set">--</span></p>
+                </div>
+            </div>
+            <p class="moon__reading" id="moon-reading"></p>
+        </section>
+
+        <!-- Kitty tarot card of the day -->
+        <section class="card tarot-card">
+            <h2 class="card__title">Kitty's card of the day</h2>
+            <div class="tarot">
+                <button type="button" class="tarot__card" id="tarot-card" aria-label="Turn the tarot card over" aria-pressed="false">
+                    <span class="tarot__inner">
+                        <span class="tarot__back"></span>
+                        <img class="tarot__front" id="tarot-image" alt="">
+                    </span>
+                </button>
+                <div class="tarot__text">
+                    <h3 class="tarot__name" id="tarot-name">Your card of the day</h3>
+                    <p class="tarot__orientation" id="tarot-orientation"></p>
+                    <p class="tarot__meaning" id="tarot-meaning">Shuffling the deck…</p>
+                    <button type="button" class="pill-button" id="tarot-again">Draw again</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- The witch's almanac -> zodiac signs and the next witchy holiday -->
+        <section class="card almanac-card">
+            <h2 class="card__title">Witch's almanac</h2>
+            <ul class="almanac">
+                <li class="almanac__row">
+                    <img class="almanac__icon" id="sun-sign-icon" src="assets/zodiac/aries-white.png" alt="">
+                    <span>Sun in <strong id="sun-sign">…</strong></span>
+                </li>
+                <li class="almanac__row">
+                    <img class="almanac__icon" id="moon-sign-icon" src="assets/zodiac/aries-white.png" alt="">
+                    <span>Moon in <strong id="moon-sign">…</strong></span>
+                </li>
+                <li class="almanac__row">
+                    <span class="sabbat__icon" id="sabbat-icon" aria-hidden="true"></span>
+                    <span><strong id="sabbat-name">…</strong> <span id="sabbat-days"></span></span>
+                </li>
+            </ul>
+        </section>
+
+        <!-- next 7 days -->
+        <section class="card daily-card">
+            <h2 class="card__title">Next 7 days</h2>
+            <!-- JS fills list -->
+            <ul class="daily" id="daily-list"></ul>
+        </section>
+
+        <!-- What every weather source says rn (side by side) -->
+        <section class="card sources">
+            <h2 class="card__title">Right now, according to each source</h2>
+            <ul class="sources__list" id="sources-list"></ul>
+        </section>
+
+        <!--  (ugly white chart :<) where sources compare -->
+        <section class="card chart-card">
+            <h2 class="card__title">Temperature next 24 h – sources compared</h2>
+            <div class="chart-box">
+                <canvas id="comparison-chart" aria-label="Line chart comparing the 24 hour temperature forecast of each data source" role="img"></canvas>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>
+            Weather data: <a href="https://open-meteo.com/">Open-Meteo</a>,
+            <a href="https://api.met.no/">MET Norway</a>,
+            <a href="https://wttr.in/">wttr.in</a><span id="owm-credit" hidden>,
+            <a href="https://openweathermap.org/">OpenWeatherMap</a></span>.
+            Tarot: <a href="https://tarotapi.dev/">Tarot API</a>.
+            Place names: Open-Meteo Geocoding, BigDataCloud.
+        </p>
+        <p>Pixel art: backgrounds by <a href="https://craftpix.net/">CraftPix.net</a>, weather icons by bgbw. Full art credits in README.md.</p>
+    </footer>
+
+    <!-- Chart library that drwas the chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+    <!-- JS split into more files because this project is just hige and complex for one JS -->
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/weather-icons.js"></script>
+    <script src="js/units.js"></script>
+    <script src="js/sky.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/moon.js"></script>
+    <script src="js/tarot.js"></script>
+    <script src="js/favorites.js"></script>
+    <script src="js/chart.js"></script>
+    <script src="js/providers/open-meteo.js"></script>
+    <script src="js/providers/met-norway.js"></script>
+    <script src="js/providers/wttr.js"></script>
+    <script src="js/providers/openweathermap.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
